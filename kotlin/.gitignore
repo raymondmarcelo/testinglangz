@@ -1,0 +1,36 @@
+# Android artifacts
+build/
+*.apk
+*.aar
+*.ap_
+*.dex
+native-libs/
+
+# Gradle artifacts
+.gradle/
+build/
+gradle-app.setting
+!gradle-wrapper.jar
+.gradletasknamecache
+
+# IntelliJ IDEA / Android Studio
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# DS_Store
+.DS_Store
+
+# Local configuration
+local.properties
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+
+# Captures
+captures/

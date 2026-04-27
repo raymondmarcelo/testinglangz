@@ -1,7 +1,0 @@
-appId: com.anonymous.shelfawareness
-tags:
-    - ios
----
-- launchApp:
-    clearState: true
-- assertVisible: "Shelf Awareness"

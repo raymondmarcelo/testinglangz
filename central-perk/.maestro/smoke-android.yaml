@@ -1,7 +1,0 @@
-# CI validation marker: exercise Android Maestro lane after central workflow update v2.
-appId: com.anonymous.centralperk
-tags:
-    - android
----
-- launchApp:
-    clearState: true

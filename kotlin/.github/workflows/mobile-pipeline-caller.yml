@@ -1,11 +1,43 @@
-name: "Master Pipeline - Mobile"
+# ──────────────────────────────────────────────────────────────
+# Mobile Pipeline Caller (unified)
+# Copy this file into the target repo at:
+#   .github/workflows/master-pipeline-mobile.yml
+#
+# Works for Expo + TypeScript, Kotlin/Android, and mixed repos.
+# Also used by MB (micro-backend) repositories.
+# The pipeline_mode input controls which SYSTEMS_JSON variable
+# is read (auto = picks multi if available, else single).
+#
+# ── Required repository variables ──────────────────────────────
+# Set MOBILE_SINGLE_SYSTEMS_JSON (or MOBILE_MULTI_SYSTEMS_JSON)
+# as a repository variable.
+#
+# Minimal config (all other fields have sensible defaults):
+#
+# { "name": "MyApp-Mobile", "dir": ".", "mobile_stack": "expo" }
+#
+# Optional overrides (showing defaults):
+#   enable_android_build: true   — Local Android build (Detox debug APK)
+#   enable_ios_build: true       — Local iOS simulator build (Detox debug .app)
+#   enable_lint: true
+#   enable_security_scan: true
+#   enable_governance: true
+#   coverage_threshold: 80
+#
+# Expo systems must be TypeScript-based:
+#   tsconfig.json + strict mode
+# Builds are local (xcodebuild / Gradle) — no EAS or EXPO_TOKEN needed.
+# Detox E2E tests consume build artifacts from the build stage.
+# SonarCloud runs once at the master mobile pipeline level, and Detox
+# runs by default for Expo systems.
+# ──────────────────────────────────────────────────────────────
+name: "Master Pipeline — Mobile"
 
 on:
   push:
     branches: [test, uat, main]
   pull_request:
     branches: [test, uat, main]
-    types: [opened, synchronize, reopened, labeled]
   workflow_dispatch:
     inputs:
       pipeline_mode:
@@ -13,11 +45,6 @@ on:
         type: choice
         options: [auto, single, multi]
         default: auto
-      stack_filter:
-        description: "Optional stack filter (all|expo|react-native|kotlin)"
-        type: choice
-        options: [all, expo, react-native, kotlin]
-        default: all
       enable_lint:
         description: "Run lint checks"
         type: boolean
@@ -34,18 +61,10 @@ on:
         description: "Run governance checks (Kotlin)"
         type: boolean
         default: true
-      enable_maestro:
-        description: "Run Maestro Android E2E"
-        type: boolean
-        default: true
-      enable_maestro_ios:
-        description: "Run Maestro iOS E2E"
-        type: boolean
-        default: true
       enable_grafana_k6:
         description: "Run Grafana k6 cloud checks"
         type: boolean
-        default: true
+        default: false
       k6_script_path:
         description: "Path to k6 script or performance tests directory"
         type: string
@@ -86,14 +105,11 @@ jobs:
     uses: ImplementSprint/central-workflow/.github/workflows/master-pipeline-mobile.yml@main
     with:
       pipeline_mode: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.pipeline_mode || 'auto' }}
-      stack_filter: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.stack_filter || 'all' }}
       enable_lint: ${{ github.event_name == 'workflow_dispatch' && fromJSON(github.event.inputs.enable_lint || 'true') || true }}
       enable_security_scan: ${{ github.event_name == 'workflow_dispatch' && fromJSON(github.event.inputs.enable_security_scan || 'true') || true }}
-      enable_sonar: ${{ github.event_name == 'workflow_dispatch' && fromJSON(github.event.inputs.enable_sonar || 'true') || true }}
+      enable_sonar: true
       enable_governance: ${{ github.event_name == 'workflow_dispatch' && fromJSON(github.event.inputs.enable_governance || 'true') || true }}
-      enable_maestro: ${{ github.event_name == 'workflow_dispatch' && fromJSON(github.event.inputs.enable_maestro || 'true') || true }}
-      enable_maestro_ios: ${{ github.event_name == 'workflow_dispatch' && fromJSON(github.event.inputs.enable_maestro_ios || 'true') || true }}
-      enable_grafana_k6: ${{ github.event_name == 'workflow_dispatch' && fromJSON(github.event.inputs.enable_grafana_k6 || 'true') || true }}
+      enable_grafana_k6: ${{ github.event_name == 'workflow_dispatch' && fromJSON(github.event.inputs.enable_grafana_k6 || 'false') || false }}
       k6_script_path: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.k6_script_path || 'tests/performance' }}
       k6_base_url: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.k6_base_url || '' }}
       k6_run_only_on_branch: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.k6_run_only_on_branch || 'test,uat,main' }}

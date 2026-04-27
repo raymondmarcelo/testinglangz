@@ -1,7 +1,0 @@
-appId: com.anonymous.centralperk
-tags:
-    - ios
----
-- launchApp:
-    clearState: true
-- assertVisible: "Central Perk"

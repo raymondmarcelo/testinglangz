@@ -1,0 +1,7 @@
+appId: org.reactjs.native.example.TemplateRepoMobileReactNative
+tags:
+  - ios
+---
+- launchApp:
+    clearState: true
+- assertVisible: "Template Repo Mobile React Native"

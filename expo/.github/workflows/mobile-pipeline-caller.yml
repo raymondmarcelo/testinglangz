@@ -1,4 +1,37 @@
-name: "Master Pipeline - Mobile"
+# ──────────────────────────────────────────────────────────────
+# Mobile Pipeline Caller (unified)
+# Copy this file into the target repo at:
+#   .github/workflows/master-pipeline-mobile.yml
+#
+# Works for Expo + TypeScript, Kotlin/Android, and mixed repos.
+# Also used by MB (micro-backend) repositories.
+# The pipeline_mode input controls which SYSTEMS_JSON variable
+# is read (auto = picks multi if available, else single).
+#
+# ── Required repository variables ──────────────────────────────
+# Set MOBILE_SINGLE_SYSTEMS_JSON (or MOBILE_MULTI_SYSTEMS_JSON)
+# as a repository variable.
+#
+# Minimal config (all other fields have sensible defaults):
+#
+# { "name": "MyApp-Mobile", "dir": ".", "mobile_stack": "expo" }
+#
+# Optional overrides (showing defaults):
+#   enable_android_build: true   — Local Android app build for Maestro (debug APK)
+#   enable_ios_build: true       — Local iOS simulator app build for Maestro (.app)
+#   enable_lint: true
+#   enable_security_scan: true
+#   enable_governance: true
+#   coverage_threshold: 80
+#
+# Expo systems must be TypeScript-based:
+#   tsconfig.json + strict mode
+# Builds are local (xcodebuild / Gradle) — no EAS or EXPO_TOKEN needed.
+# Maestro E2E tests consume build artifacts from the build stage.
+# SonarCloud runs once at the master mobile pipeline level, and Maestro
+# runs by default for Expo systems.
+# ──────────────────────────────────────────────────────────────
+name: "Master Pipeline — Mobile"
 
 on:
   push:

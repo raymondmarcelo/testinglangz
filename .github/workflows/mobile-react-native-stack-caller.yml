@@ -1,11 +1,6 @@
-name: "Master Pipeline - Mobile"
+name: "Master Pipeline - Mobile React Native Stack"
 
 on:
-  push:
-    branches: [test, uat, main]
-  pull_request:
-    branches: [test, uat, main]
-    types: [opened, synchronize, reopened, labeled]
   workflow_dispatch:
     inputs:
       pipeline_mode:
@@ -13,11 +8,6 @@ on:
         type: choice
         options: [auto, single, multi]
         default: auto
-      stack_filter:
-        description: "Optional stack filter (all|expo|react-native|kotlin)"
-        type: choice
-        options: [all, expo, react-native, kotlin]
-        default: all
       enable_lint:
         description: "Run lint checks"
         type: boolean
@@ -86,7 +76,7 @@ jobs:
     uses: ImplementSprint/central-workflow/.github/workflows/master-pipeline-mobile.yml@main
     with:
       pipeline_mode: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.pipeline_mode || 'auto' }}
-      stack_filter: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.stack_filter || 'all' }}
+      stack_filter: react-native
       enable_lint: ${{ github.event_name == 'workflow_dispatch' && fromJSON(github.event.inputs.enable_lint || 'true') || true }}
       enable_security_scan: ${{ github.event_name == 'workflow_dispatch' && fromJSON(github.event.inputs.enable_security_scan || 'true') || true }}
       enable_sonar: ${{ github.event_name == 'workflow_dispatch' && fromJSON(github.event.inputs.enable_sonar || 'true') || true }}

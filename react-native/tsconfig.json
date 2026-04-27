@@ -1,0 +1,25 @@
+{
+  "extends": "@react-native/typescript-config",
+  "compilerOptions": {
+    "strict": true,
+    "allowJs": false,
+    "noUncheckedIndexedAccess": true,
+    "baseUrl": ".",
+    "types": ["jest", "node"],
+    "paths": {
+      "@app/*": ["src/app/*"],
+      "@config/*": ["src/config/*"],
+      "@features/*": ["src/features/*"],
+      "@navigation/*": ["src/navigation/*"],
+      "@theme/*": ["src/theme/*"],
+      "@utils/*": ["src/utils/*"]
+    }
+  },
+  "include": [
+    "App.tsx",
+    "src",
+    "tests",
+    "scripts"
+  ],
+  "exclude": ["**/node_modules", "**/Pods"]
+}
